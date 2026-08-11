@@ -10,10 +10,10 @@ test('test_desafio', async ({ page }) => {
   
   await expect(page.getByRole('heading')).toContainText('Consultar Pedido');
 
-  await page.getByRole('textbox', { name: 'Número do Pedido' }).fill('VLO-QYESMH');
+  await page.getByRole('textbox', { name: 'Número do Pedido' }).fill('VLO-72GICU');
   await page.locator('//button[text()="Buscar Pedido"]').click();
 
   await expect(page.getByText('Pedido', { exact: true })).toBeVisible({timeout: 10_000});
-  await expect(page.getByText('VLO-QYESMH')).toBeVisible();
+  await expect(page.getByText('VLO-72GICU')).toBeVisible();
   await expect(page.getByText('APROVADO')).toBeVisible();
 });
