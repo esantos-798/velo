@@ -14,70 +14,24 @@ test.describe('Consulta de Pedido', () => {
     await app.orderLockup.expectLoaded()
   })
 
-  test('deve consultar um pedido aprovado', async ({ app }) => {
+  test('deve consultar um pedido aprovado', async ({ app, seedOrder }) => {
+    const order = await seedOrder({ status: 'APROVADO' })
 
-    // Test Data
-    const order = {
-      number: 'VLO-72GICU',
-      status: 'APROVADO',
-      color: 'Lunar White',
-      wheels: 'aero Wheels',
-      customer: {
-        name: 'EDUARDO DOS SANTOS',
-        email: 'eduardo@velo.dev'
-      },
-      payment: 'À Vista'
-    } as const
-
-    // Act
     await app.orderLockup.searchOrder(order.number)
-
-    // Assert
-    await app.orderLockup.validateOrderResult(order)
-
-  })
-
-  test('deve consultar um pedido reprovado', async ({ app }) => {
-
-    // Test Data
-    const order = {
-      number: 'VLO-YT5MC7',
-      status: 'REPROVADO',
-      color: 'Midnight Black',
-      wheels: 'sport Wheels',
-      customer: {
-        name: 'Steve Jobs',
-        email: 'jobs@apple.com'
-      },
-      payment: 'À Vista'
-    } as const
-
-    // Act
-    await app.orderLockup.searchOrder(order.number)
-
-    // Assert
     await app.orderLockup.validateOrderResult(order)
   })
 
-  test('deve consultar um pedido em analise', async ({ app }) => {
+  test('deve consultar um pedido reprovado', async ({ app, seedOrder }) => {
+    const order = await seedOrder({ status: 'REPROVADO' })
 
-    // Test Data
-    const order = {
-      number: 'VLO-ONBDD7',
-      status: 'EM_ANALISE',
-      color: 'Lunar White',
-      wheels: 'aero Wheels',
-      customer: {
-        name: 'João da Silva',
-        email: 'joao@velo.dev'
-      },
-      payment: 'À Vista'
-    } as const
-
-    // Act
     await app.orderLockup.searchOrder(order.number)
+    await app.orderLockup.validateOrderResult(order)
+  })
 
-    // Assert
+  test('deve consultar um pedido em analise', async ({ app, seedOrder }) => {
+    const order = await seedOrder({ status: 'EM_ANALISE' })
+
+    await app.orderLockup.searchOrder(order.number)
     await app.orderLockup.validateOrderResult(order)
   })
 
