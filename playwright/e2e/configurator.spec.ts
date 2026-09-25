@@ -1,41 +1,45 @@
 import { test } from '../support/fixtures'
 
-test.describe('Configuração do Veículo (Cores e Rodas) e Cálculo do Preço Base', () => {
-
+test.describe('Configuração do Veículo', () => {
   test.beforeEach(async ({ app }) => {
-    await app.configurator.open();
-  });
-  
-  test('deve atualizar a imagem do veículo e manter o preço base ao alterar a cor exterior', async ({ app }) => {
-    // Estado Inicial: Verificar o preço base de R$ 40.000,00 e cor padrão
-    await app.configurator.expectPrice('R$ 40.000,00');
-    await app.configurator.expectColorOptionVisible('Glacier Blue');
+    await app.configurator.open()
+  })
 
-    // Ação: Selecionar uma cor exterior diferente ("Midnight Black")
-    await app.configurator.selectColor('Midnight Black');
-    
-    // Assert: Validar que o preço permanece R$ 40.000,00
-    await app.configurator.expectPrice('R$ 40.000,00');
-    await app.configurator.expectCarImage('/src/assets/midnight-black-aero-wheels.png');
-  });
+  test('deve atualizar a imagem e manter o preço base ao trocar a cor do veículo', async ({ app }) => {
+    await app.configurator.expectPrice('R$ 40.000,00')
 
-  test('deve atualizar a imagem do veículo e recalcular o preço total ao alternar o modelo das rodas', async ({ app }) => {
-    // Estado Inicial: Verificar o preço base de R$ 40.000,00
-    await app.configurator.expectPrice('R$ 40.000,00');
+    await app.configurator.selectColor('Midnight Black')
+    await app.configurator.expectPrice('R$ 40.000,00')
+    await app.configurator.expectCarImageSrc(/midnight-black-aero-wheels/)
+  })
 
-    // Ação 1: Selecionar a opção de roda "Sport Wheels"
-    await app.configurator.selectWheels(/Sport Wheels/);
-    await app.configurator.expectCarImage('/src/assets/glacier-blue-sport-wheels.png');
-    
-    // Assert 1: Validar acréscimo de R$ 2.000,00 (Total: R$ 42.000,00)
-    await app.configurator.expectPrice('R$ 42.000,00');
+  test('deve atualizar o preço e a imagem ao alterar as rodas, e restaurar os valores padrão', async ({ app }) => {
+    await app.configurator.expectPrice('R$ 40.000,00')
 
-    // Ação 2: Voltar para a roda "Aero Wheels"
-    await app.configurator.selectWheels(/Aero Wheels/);
-    
-    // Assert 2: Validar retorno ao preço base (Total: R$ 40.000,00)
-    await app.configurator.expectPrice('R$ 40.000,00');
-    await app.configurator.expectCarImage('/src/assets/glacier-blue-aero-wheels.png');
-  });
+    await app.configurator.selectWheels(/Sport Wheels/)
+    await app.configurator.expectPrice('R$ 42.000,00')
+    await app.configurator.expectCarImageSrc(/glacier-blue-sport-wheels/)
 
-});
+    await app.configurator.selectWheels(/Aero Wheels/)
+    await app.configurator.expectPrice('R$ 40.000,00')
+    await app.configurator.expectCarImageSrc(/glacier-blue-aero-wheels/)
+  })
+
+  test('deve atualizar o preço com opcionais e persistir no checkout', async ({ app }) => {
+    await app.configurator.expectPrice('R$ 40.000,00')
+
+    await app.configurator.checkOptional(/Precision Park/i)
+    await app.configurator.expectPrice('R$ 45.500,00')
+
+    await app.configurator.checkOptional(/Flux Capacitor/i)
+    await app.configurator.expectPrice('R$ 50.500,00')
+
+    await app.configurator.uncheckOptional(/Precision Park/i)
+    await app.configurator.uncheckOptional(/Flux Capacitor/i)
+    await app.configurator.expectPrice('R$ 40.000,00')
+
+    await app.configurator.finishConfigurator()
+    await app.checkout.expectLoaded()
+    await app.checkout.expectSummaryTotal('R$ 40.000,00')
+  })
+})

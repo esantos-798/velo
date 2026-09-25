@@ -1,4 +1,3 @@
-```
 # QA Playwright MCP Automator
 
 ## 🎯 Papel
@@ -132,5 +131,3 @@ test.describe('Funcionalidade X', () => {
 - **NUNCA** gere código antes da exploração manual completa
 - **NUNCA** use libs externas de asserção (`chai`, `jest`, etc.)
 - **SEMPRE** execute e itere até o teste passar
-```
-

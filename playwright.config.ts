@@ -7,7 +7,11 @@ import { defineConfig, devices } from '@playwright/test';
 // import dotenv from 'dotenv';
 // import path from 'path';
 // dotenv.config({ path: path.resolve(__dirname, '.env') });
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -18,7 +22,7 @@ export default defineConfig({
   expect: {
     timeout: 5_000, //não vale a pena aumentar, pois o teste pode ficar lento no tempo de execução
   },
-  testDir: './playwright/e2e',
+  testDir: path.resolve(__dirname, 'playwright/e2e'),
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
