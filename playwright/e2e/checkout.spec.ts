@@ -160,5 +160,224 @@ test.describe('Checkout', () => {
       // Assert
       await app.checkout.expectResult('Pedido Aprovado!')
     })
+    test('deve aprovar automaticamente o crédito quando o score do CPF for maior que 700 no financiamento', async ({ app }) => {
+
+      const customer = {
+        name: 'Steve',
+        lastname: 'Woz',
+        email: 'woz@velo.dev',
+        document: '65493881047',
+        phone: '(11) 99999-9999',
+        store: 'Velô Paulista',
+        paymentMethod: 'Financiamento',
+        totalPrice: 'R$ 40.000,00'
+      }
+
+      await deleteOrderByDocument(customer.document)
+
+      await app.mock.creditAnalysis(710)
+
+      // Arrange
+      await app.configurator.expectPrice(customer.totalPrice)
+      await app.configurator.finishConfigurator()
+      await app.checkout.expectLoaded()
+
+      await app.checkout.fillCustomerlData(customer)
+      await app.checkout.selectStore(customer.store)
+
+      // Act
+      await app.checkout.selectPaymentMethod(customer.paymentMethod)
+      // await app.checkout.expectSummaryTotal(customer.totalPrice)
+      await app.checkout.acceptTerms()
+      await app.checkout.submit()
+
+      // Assert
+      await app.checkout.expectResult('Pedido Aprovado!')
+    })
+
+    test('deve encaminhar para análise de crédito quando o score do CPF for entre 501 e 700 no financiamento', async ({ app }) => {
+
+      const customer = {
+        name: 'Tony',
+        lastname: 'Stark',
+        email: 'tony@stark.com',
+        document: '74690251037',
+        phone: '(11) 99999-9999',
+        store: 'Velô Paulista',
+        paymentMethod: 'Financiamento',
+        totalPrice: 'R$ 40.000,00'
+      }
+
+      await deleteOrderByDocument(customer.document)
+
+      await app.mock.creditAnalysis(600)
+
+      // Arrange
+      await app.configurator.expectPrice(customer.totalPrice)
+      await app.configurator.finishConfigurator()
+      await app.checkout.expectLoaded()
+
+      await app.checkout.fillCustomerlData(customer)
+      await app.checkout.selectStore(customer.store)
+
+      // Act
+      await app.checkout.selectPaymentMethod(customer.paymentMethod)
+      await app.checkout.acceptTerms()
+      await app.checkout.submit()
+
+      // Assert
+      await app.checkout.expectResult('Pedido em Análise!')
+    })
+    test('deve reprovar o crédito quando o score do CPF for menor ou igual a 500 no financiamento', async ({ app }) => {
+
+      const customer = {
+    
+        name: 'Bruce',
+        lastname: 'Wayne',
+        email: 'wayne@wayne.com',
+        document: '106.166.110-56',
+        phone: '(11) 99999-9999',
+        store: 'Velô Paulista',
+        paymentMethod: 'Financiamento',
+        totalPrice: 'R$ 40.000,00'
+    
+      }
+    
+      await deleteOrderByDocument(customer.document)
+    
+      await app.mock.creditAnalysis(500)
+    
+      // Arrange
+    
+      await app.configurator.expectPrice(customer.totalPrice)
+    
+      await app.configurator.finishConfigurator()
+    
+      await app.checkout.expectLoaded()
+    
+      await app.checkout.fillCustomerlData(customer)
+    
+      await app.checkout.selectStore(customer.store)
+    
+      // Act
+    
+      await app.checkout.selectPaymentMethod(customer.paymentMethod)
+    
+      await app.checkout.acceptTerms()
+    
+      await app.checkout.submit()
+    
+      // Assert
+    
+      await app.checkout.expectResult('Pedido Reprovado!')
+    
+    })
+
+    test('deve reprovar o crédito quando o score do CPF for menor ou igual a 500 no financiamento com entrada menor que 50%', async ({ app }) => {
+
+      const customer = {
+        name: 'Clark',
+        lastname: 'Kent',
+        email: 'clark@dailyplanet.com',
+        document: '52998224725',
+        phone: '(11) 99999-9999',
+        store: 'Velô Paulista',
+        paymentMethod: 'Financiamento',
+        totalPrice: 'R$ 40.000,00',
+        downPayment: '10000'
+      }
+
+      await deleteOrderByDocument(customer.document)
+
+      await app.mock.creditAnalysis(500)
+
+      // Arrange
+      await app.configurator.expectPrice(customer.totalPrice)
+      await app.configurator.finishConfigurator()
+      await app.checkout.expectLoaded()
+
+      await app.checkout.fillCustomerlData(customer)
+      await app.checkout.selectStore(customer.store)
+
+      // Act
+      await app.checkout.selectPaymentMethod(customer.paymentMethod)
+      await app.checkout.fillDownPayment(customer.downPayment)
+      await app.checkout.acceptTerms()
+      await app.checkout.submit()
+
+      // Assert
+      await app.checkout.expectResult('Pedido Reprovado!')
+    })
+
+    test('deve aprovar o crédito quando o score do CPF for menor ou igual a 500 no financiamento com entrada igual que 50%', async ({ app }) => {
+
+      const customer = {
+        name: 'Richard',
+        lastname: 'Fortus',
+        email: 'richard@gmail.com',
+        document: '52998224725',
+        phone: '(11) 99999-9999',
+        store: 'Velô Paulista',
+        paymentMethod: 'Financiamento',
+        totalPrice: 'R$ 40.000,00',
+        downPayment: '20000'
+      }
+
+      await deleteOrderByDocument(customer.document)
+
+      await app.mock.creditAnalysis(450)
+
+      // Arrange
+      await app.configurator.expectPrice(customer.totalPrice)
+      await app.configurator.finishConfigurator()
+      await app.checkout.expectLoaded()
+
+      await app.checkout.fillCustomerlData(customer)
+      await app.checkout.selectStore(customer.store)
+
+      // Act
+      await app.checkout.selectPaymentMethod(customer.paymentMethod)
+      await app.checkout.fillDownPayment(customer.downPayment)
+      await app.checkout.acceptTerms()
+      await app.checkout.submit()
+
+      // Assert
+      await app.checkout.expectResult('Pedido Aprovado!')
+    })
+    test('deve aprovar o crédito quando o score do CPF for menor ou igual a 500 no financiamento com entrada maior que 50%', async ({ app }) => {
+
+      const customer = {
+        name: 'Axel',
+        lastname: 'Rose',
+        email: 'axel@gmail.com',
+        document: '52998224725',
+        phone: '(11) 99999-9999',
+        store: 'Velô Paulista',
+        paymentMethod: 'Financiamento',
+        totalPrice: 'R$ 40.000,00',
+        downPayment: '20000'
+      }
+
+      await deleteOrderByDocument(customer.document)
+
+      await app.mock.creditAnalysis(300)
+
+      // Arrange
+      await app.configurator.expectPrice(customer.totalPrice)
+      await app.configurator.finishConfigurator()
+      await app.checkout.expectLoaded()
+
+      await app.checkout.fillCustomerlData(customer)
+      await app.checkout.selectStore(customer.store)
+
+      // Act
+      await app.checkout.selectPaymentMethod(customer.paymentMethod)
+      await app.checkout.fillDownPayment(customer.downPayment)
+      await app.checkout.acceptTerms()
+      await app.checkout.submit()
+
+      // Assert
+      await app.checkout.expectResult('Pedido Aprovado!')
+    })
   })
 })
