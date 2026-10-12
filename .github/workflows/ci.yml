@@ -1,0 +1,48 @@
+# ==============================================================================
+# Pipeline de Integração Contínua (CI)
+# Propósito: Executar testes unitários utilizando Vitest em ambiente Node.js 24.
+# Estrutura modular preparada para futuras expansões de QA e DevOps.
+# ==============================================================================
+
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  NODE_VERSION: '24'
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Faz o checkout do código-fonte do repositório
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      # 2. Configura a versão especificada do Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # 3. Habilita o Corepack para gerenciar o Yarn
+      - name: Enable Corepack
+        run: corepack enable
+
+      # 4. Instala as dependências do projeto utilizando o Yarn
+      - name: Install dependencies
+        run: yarn install
+
+      # 5. Executa os testes unitários da aplicação
+      - name: Run unit tests
+        run: yarn test
+
+      # --------------------------------------------------------------------------
+      # ESPAÇO RESERVADO PARA FUTURA EXPANSÃO:
+      # Novos jobs, steps de relatórios de cobertura ou verificações adicionais
+      # podem ser anexados aqui mantendo o fluxo isolado.
+      # --------------------------------------------------------------------------
