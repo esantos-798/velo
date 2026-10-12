@@ -15,8 +15,8 @@ env:
   NODE_VERSION: '24'
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   #VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  #VERCEL_PROJECT_ID: prj_30SIVMjSEMi68Kfloo52Q01nYpGUddgJfEWJbABocWgkD55SQz4VreWY
-  #VERCEL_ORG_ID: org_30SIVMjSEMi68Kfloo52Q01nYpGUddgJfEWJbABocWgkD55SQz4VreWY
+  VERCEL_PROJECT_ID: prj_30SIVMjSEMi68Kfloo52Q01nYpGUddgJfEWJbABocWgkD55SQz4VreWY
+  VERCEL_ORG_ID: org_30SIVMjSEMi68Kfloo52Q01nYpGUddgJfEWJbABocWgkD55SQz4VreWY
   VERCEL_SCOPE: eduardo-santos3
 
 jobs:
@@ -69,6 +69,9 @@ jobs:
       # 4. Instala as dependências do projeto utilizando o Yarn
       - name: Install dependencies
         run: yarn install
+
+      - name: Link Vercel Project
+        run: yarn vercel link --yes --token=$VERCEL_TOKEN --project-id=$VERCEL_PROJECT_ID --scope=$VERCEL_SCOPE
 
       # 5. Opter as configurações do Vercel
       - name: Pull Vercel Config
