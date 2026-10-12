@@ -33,10 +33,6 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      # 3.1 Prepara o Yarn correto para o projeto (lê o packageManager do package.json)
-      - name: Prepare Yarn
-        run: corepack prepare --activate
-
       # 4. Instala as dependências do projeto utilizando o Yarn
       - name: Install dependencies
         run: yarn install
