@@ -14,7 +14,7 @@ env:
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_SCOPE: esantos-798
+  VERCEL_SCOPE: eduardo-santos3
 
 jobs:
   unit-tests:
@@ -59,10 +59,10 @@ jobs:
         run: yarn install
 
       - name: Pull Vercel Config
-        run: yarn vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+        run: yarn vercel pull --yes --environment=preview --token=$VERCEL_TOKEN --scope=$VERCEL_SCOPE
 
       - name: Build Vercel
-        run: yarn vercel build --token=$VERCEL_TOKEN
+        run: yarn vercel build --token=$VERCEL_TOKEN  --scope=$VERCEL_SCOPE
 
       - name: Deploy Preview
-        run: yarn vercel deploy --prebuilt --target=preview --token=$VERCEL_TOKEN
+        run: yarn vercel deploy --prebuilt --target=preview --token=$VERCEL_TOKEN --scope=$VERCEL_SCOPE
