@@ -44,7 +44,7 @@ export default defineConfig({
     trace: 'on',
     //trace: 'retain-on-failure',
 
-    headless: false,
+    headless: true,
 
 
  
