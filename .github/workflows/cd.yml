@@ -127,5 +127,5 @@ jobs:
         run: | 
         yarn vercel promote ${{ needs.build-and-deploy.outputs.deployments-url }} \
         --token=$VERCEL_TOKEN \
-        --token=$VERCEL_SCOPE \
+        --scope=$VERCEL_SCOPE \
         --yes
