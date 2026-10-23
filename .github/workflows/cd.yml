@@ -120,8 +120,9 @@ jobs:
   # Publicar report JSON 
       - name: Pusblish Testdino Report
         if: ${{ !cancelled() }}
-        run: export TESTDINO_TOKEN=${{ secrets.TD_Token }}
-
+        run: |
+          export TESTDINO_TOKEN="${{ secrets.TD_Token }}"
+          npx playwright test
   promote:
     name: Promote to Production
     needs: [build-and-deploy, e2e-tests]
