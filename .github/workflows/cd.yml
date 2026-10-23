@@ -116,6 +116,11 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report
+  
+  # Publicar report JSON 
+      - name: Pusblish Testdino Report
+        if: ${{ !cancelled() }}
+        run: export TESTDINO_TOKEN=${{ secrets.TD_Token }}
 
   promote:
     name: Promote to Production
